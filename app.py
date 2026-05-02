@@ -21,7 +21,7 @@ html, body, [class*="css"] {
     font-family: 'IBM Plex Sans', sans-serif;
 }
 
-/* Section headers — teal accent color */
+/* Section headers */
 .section-header {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.70rem;
@@ -89,10 +89,10 @@ html, body, [class*="css"] {
     color: #1a1a1a;
 }
 .driver-name { color: #1a1a1a; font-weight: 500; }
-.driver-up   { color: #c0392b; font-weight: 600; white-space: nowrap; margin-left: 12px; }
+.driver-up { color: #c0392b; font-weight: 600; white-space: nowrap; margin-left: 12px; }
 .driver-down { color: #1a7a3f; font-weight: 600; white-space: nowrap; margin-left: 12px; }
 
-/* Center + style the submit button — blue */
+/* Center + style the submit button */
 div[data-testid="stFormSubmitButton"] {
     display: flex !important;
     justify-content: center !important;
@@ -150,12 +150,9 @@ DIAG_CATEGORIES = ["Select"] + sorted([
     "Symptoms, Signs, And Ill-Defined Conditions",
 ])
 
-ADMISSION_TYPE   = {0: "Select", 1: "Emergency", 2: "Urgent", 3: "Elective", 4: "Newborn", 5: "Not Available", 7: "Trauma Center"}
-DISCHARGE_DISP   = {0: "Select", 1: "Home", 2: "Short Term Hospital", 3: "Skilled Nursing Facility",
-                    6: "Home with Home Health", 11: "Expired", 13: "Hospice / Home",
-                    18: "Not Available", 25: "Not Mapped"}
-ADMISSION_SOURCE = {0: "Select", 1: "Physician Referral", 2: "Clinic Referral", 3: "HMO Referral",
-                    4: "Transfer from Hospital", 7: "Emergency Room", 9: "Not Available"}
+ADMISSION_TYPE = {0: "Select", 1: "Emergency", 2: "Urgent", 3: "Elective", 4: "Newborn", 7: "Trauma Center"}
+DISCHARGE_DISP = {0: "Select", 1: "Home", 2: "Short Term Hospital", 3: "Skilled Nursing Facility", 6: "Home with Home Health", 13: "Hospice / Home"}
+ADMISSION_SOURCE = {0: "Select", 1: "Physician Referral", 2: "Clinic Referral", 3: "HMO Referral", 4: "Transfer from Hospital", 7: "Emergency Room"}
 
 
 def clean_feature_name(feat):
@@ -219,42 +216,42 @@ with st.form("patient_form"):
     # Column 1: Demographics + Diagnoses
     with col1:
         st.markdown('<p class="section-header">Demographics</p>', unsafe_allow_html=True)
-        age    = st.selectbox("Age Group", ["Select", "[10-20)","[20-30)","[30-40)","[40-50)","[50-60)","[60-70)","[70-80)","[80-90)","[90-100)"], index=0)
+        age = st.selectbox("Age Group", ["Select", "[10-20)","[20-30)","[30-40)","[40-50)","[50-60)","[60-70)","[70-80)","[80-90)","[90-100)"], index=0)
         gender = st.selectbox("Gender", ["Select", "Female", "Male"], index=0)
-        race   = st.selectbox("Race", ["Select", "AfricanAmerican", "Asian", "Caucasian", "Hispanic", "Other"], index=0)
+        race = st.selectbox("Race", ["Select", "AfricanAmerican", "Asian", "Caucasian", "Hispanic", "Other"], index=0)
 
         st.markdown('<div class="spacer-md"><p class="section-header">Diagnoses</p></div>', unsafe_allow_html=True)
-        diag_1 = st.selectbox("Primary Diagnosis",   DIAG_CATEGORIES, index=0)
+        diag_1 = st.selectbox("Primary Diagnosis", DIAG_CATEGORIES, index=0)
         diag_2 = st.selectbox("Secondary Diagnosis", DIAG_CATEGORIES, index=0)
-        diag_3 = st.selectbox("Tertiary Diagnosis",  DIAG_CATEGORIES, index=0)
+        diag_3 = st.selectbox("Tertiary Diagnosis", DIAG_CATEGORIES, index=0)
 
     # Column 2: Admission Info + Prior Visits
     with col2:
         st.markdown('<p class="section-header">Admission Info</p>', unsafe_allow_html=True)
-        admission_type_id        = st.selectbox("Admission Type",        options=list(ADMISSION_TYPE.keys()),   format_func=lambda x: ADMISSION_TYPE[x], index=0)
-        admission_source_id      = st.selectbox("Admission Source",      options=list(ADMISSION_SOURCE.keys()), format_func=lambda x: ADMISSION_SOURCE[x], index=0)
-        discharge_disposition_id = st.selectbox("Discharge Destination", options=list(DISCHARGE_DISP.keys()),   format_func=lambda x: DISCHARGE_DISP[x], index=0)
-        time_in_hospital         = st.slider("Days in Hospital", 1, 14, 0)
+        admission_type_id = st.selectbox("Admission Type", options=list(ADMISSION_TYPE.keys()), format_func=lambda x: ADMISSION_TYPE[x], index=0)
+        admission_source_id = st.selectbox("Admission Source", options=list(ADMISSION_SOURCE.keys()), format_func=lambda x: ADMISSION_SOURCE[x], index=0)
+        discharge_disposition_id = st.selectbox("Discharge Destination", options=list(DISCHARGE_DISP.keys()), format_func=lambda x: DISCHARGE_DISP[x], index=0)
+        time_in_hospital = st.slider("Days in Hospital", 1, 14, 0)
 
         st.markdown('<div class="spacer-sm"><p class="section-header">Prior Visits</p></div>', unsafe_allow_html=True)
-        num_hospitalizations = st.number_input("Total Prior Hospitalizations",   0, 50, 0)
-        number_inpatient     = st.number_input("Inpatient Visits (prior year)",  0, 20, 0)
-        number_outpatient    = st.number_input("Outpatient Visits (prior year)", 0, 40, 0)
-        number_emergency     = st.number_input("Emergency Visits (prior year)",  0, 30, 0)
+        num_hospitalizations = st.number_input("Total Prior Hospitalizations", 0, 50, 0)
+        number_inpatient = st.number_input("Inpatient Visits (prior year)", 0, 20, 0)
+        number_outpatient = st.number_input("Outpatient Visits (prior year)", 0, 40, 0)
+        number_emergency = st.number_input("Emergency Visits (prior year)", 0, 30, 0)
 
         submitted = st.form_submit_button("Predict Readmission Risk")
 
     # Column 3: Clinical Metrics + Medications
     with col3:
         st.markdown('<p class="section-header">Clinical Metrics</p>', unsafe_allow_html=True)
-        num_procedures   = st.number_input("Number of Procedures",  0, 20, 0)
-        num_medications  = st.number_input("Number of Medications", 0, 80, 0)
-        number_diagnoses = st.number_input("Number of Diagnoses",   0, 16, 0)
+        num_procedures = st.number_input("Number of Procedures", 0, 20, 0)
+        num_medications = st.number_input("Number of Medications", 0, 80, 0)
+        number_diagnoses = st.number_input("Number of Diagnoses", 0, 16, 0)
 
         st.markdown('<div class="spacer-lg"><p class="section-header">Medications</p></div>', unsafe_allow_html=True)
-        diabetesMed      = st.selectbox("On Diabetes Medication?",        options=["Select", "Yes", "No"], index=0)
-        change           = st.selectbox("Medication Changed During Stay?", options=["Select", "Yes", "No"], index=0)
-        num_med_changes  = st.number_input("Number of Medication Changes",   0, 20, 0)
+        diabetesMed = st.selectbox("On Diabetes Medication?", options=["Select", "Yes", "No"], index=0)
+        change = st.selectbox("Medication Changed During Stay?", options=["Select", "Yes", "No"], index=0)
+        num_med_changes = st.number_input("Number of Medication Changes", 0, 20, 0)
         num_med_increase = st.number_input("Number of Medication Increases", 0, 20, 0)
 
 
@@ -262,24 +259,24 @@ with st.form("patient_form"):
 if submitted:
     # Validate required dropdowns
     missing = []
-    if age    == "Select": missing.append("Age Group")
+    if age == "Select": missing.append("Age Group")
     if gender == "Select": missing.append("Gender")
-    if race   == "Select": missing.append("Race")
+    if race == "Select": missing.append("Race")
     if diag_1 == "Select": missing.append("Primary Diagnosis")
     if diag_2 == "Select": missing.append("Secondary Diagnosis")
     if diag_3 == "Select": missing.append("Tertiary Diagnosis")
-    if admission_type_id        == 0: missing.append("Admission Type")
-    if admission_source_id      == 0: missing.append("Admission Source")
+    if admission_type_id == 0: missing.append("Admission Type")
+    if admission_source_id == 0: missing.append("Admission Source")
     if discharge_disposition_id == 0: missing.append("Discharge Destination")
     if diabetesMed == "Select": missing.append("On Diabetes Medication")
-    if change      == "Select": missing.append("Medication Changed During Stay")
+    if change == "Select": missing.append("Medication Changed During Stay")
 
     if missing:
         st.error(f"Please complete the following fields before predicting: {', '.join(missing)}")
         st.stop()
 
     avg_procedure = num_procedures / time_in_hospital if time_in_hospital > 0 else 0
-    total_visits  = number_inpatient + number_outpatient + number_emergency
+    total_visits = number_inpatient + number_outpatient + number_emergency
 
     inputs = dict(
         admission_type_id=admission_type_id, discharge_disposition_id=discharge_disposition_id,
@@ -297,9 +294,9 @@ if submitted:
     )
 
     input_df = build_input(inputs)
-    prob     = model.predict_proba(input_df)[0][1]
+    prob = model.predict_proba(input_df)[0][1]
     risk_pct = round(prob * 100, 1)
-    is_high  = prob >= 0.5
+    is_high = prob >= 0.5
 
     st.markdown("---")
     st.markdown("## Results")
@@ -308,7 +305,7 @@ if submitted:
 
     with r1:
         box_cls = "risk-high" if is_high else "risk-low"
-        label   = "High Risk" if is_high else "Low Risk"
+        label = "High Risk" if is_high else "Low Risk"
         st.markdown(f"""
         <div class="risk-box {box_cls}">
             <span class="risk-label">{label}</span>
@@ -348,9 +345,9 @@ if submitted:
 
     with r2:
         st.markdown('<p class="section-header">Top Factors Driving This Prediction</p>', unsafe_allow_html=True)
-        shap_vals   = explainer.shap_values(input_df)[0]
+        shap_vals = explainer.shap_values(input_df)[0]
         shap_series = pd.Series(shap_vals, index=feature_columns)
-        top         = shap_series.abs().nlargest(8).index
+        top = shap_series.abs().nlargest(8).index
 
         for feat, val in shap_series[top].items():
             name = clean_feature_name(feat)
