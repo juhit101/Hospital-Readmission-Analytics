@@ -5,6 +5,13 @@ import shap
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import sqlite3 
+
+
+# connect to db
+conn = sqlite3.connect("final_data.db")
+cursor = conn.cursor()
+
 
 # Page Configuration
 st.set_page_config(
@@ -297,6 +304,56 @@ if submitted:
     prob = model.predict_proba(input_df)[0][1]
     risk_pct = round(prob * 100, 1)
     is_high = prob >= 0.5
+
+    # check if prediction result is saved in database
+    query = """SELECT readmission_risk FROM predictions WHERE admission_type_id = :admission_type_id
+    AND discharge_disposition_id = :discharge_disposition_id
+    AND admission_source_id = :admission_source_id
+    AND time_in_hospital = :time_in_hospital
+    AND num_procedures = :num_procedures
+    AND num_medications = :num_medications
+    AND number_outpatient = :number_outpatient
+    AND number_emergency = :number_emergency
+    AND number_inpatient = :number_inpatient
+    AND number_diagnoses = :number_diagnoses
+    AND change = :change
+    AND diabetesMed = :diabetesMed
+    AND num_hospitalizations = :num_hospitalizations
+    AND avg_procedure = :avg_procedure
+    AND total_visits = :total_visits
+    AND num_med_changes = :num_med_changes
+    AND num_med_increase = :num_med_increase
+    AND race = :race
+    AND gender = :gender
+    AND age = :age
+    AND diag_1 = :diag_1
+    AND diag_2 = :diag_2
+    AND diag_3 = :diag_3"""
+    
+    cursor.execute(query, inputs)
+    result = cursor.fetchall()
+
+    # if result is not saved, add to database
+    if not result:
+        print("adding to db")
+        query = """INSERT INTO predictions (
+        admission_type_id, discharge_disposition_id, admission_source_id, 
+        time_in_hospital, num_procedures, num_medications, 
+        number_outpatient, number_emergency, number_inpatient, 
+        number_diagnoses, change, diabetesMed, num_hospitalizations, 
+        avg_procedure, total_visits, num_med_changes, 
+        num_med_increase, race, gender, age, diag_1, diag_2, diag_3, readmission_risk
+        ) VALUES (
+            :admission_type_id, :discharge_disposition_id, :admission_source_id, 
+            :time_in_hospital, :num_procedures, :num_medications, 
+            :number_outpatient, :number_emergency, :number_inpatient, 
+            :number_diagnoses, :change, :diabetesMed, :num_hospitalizations, 
+            :avg_procedure, :total_visits, :num_med_changes, 
+            :num_med_increase, :race, :gender, :age, :diag_1, :diag_2, :diag_3, :readmission_risk
+        )"""
+        inputs['readmission_risk']=risk_pct
+        cursor.execute(query, inputs)
+        conn.commit()
 
     st.markdown("---")
     st.markdown("## Results")
