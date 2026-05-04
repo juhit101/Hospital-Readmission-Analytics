@@ -95,11 +95,11 @@ html, body, [class*="css"] {
     font-size: 0.88rem;
     color: #1a1a1a;
 }
-.driver-name { color: #1a1a1a; font-weight: 500; }
-.driver-up { color: #c0392b; font-weight: 600; white-space: nowrap; margin-left: 12px; }
-.driver-down { color: #1a7a3f; font-weight: 600; white-space: nowrap; margin-left: 12px; }
+.driver-name {color: #1a1a1a; font-weight: 500;}
+.driver-up {color: #c0392b; font-weight: 600; white-space: nowrap; margin-left: 12px;}
+.driver-down {color: #1a7a3f; font-weight: 600; white-space: nowrap; margin-left: 12px;}
 
-/* Center + style the submit button */
+/* Submit button */
 div[data-testid="stFormSubmitButton"] {
     display: flex !important;
     justify-content: center !important;
@@ -137,7 +137,7 @@ def load_model():
 model, feature_columns, explainer = load_model()
 
 # Reference data
-DIAG_CATEGORIES = ["Select"] + sorted([
+diag_categories = ["Select"] + sorted([
     "Complications Of Pregnancy, Childbirth, And The Puerperium",
     "Diseases Of The Circulatory System",
     "Diseases Of The Digestive System",
@@ -157,9 +157,9 @@ DIAG_CATEGORIES = ["Select"] + sorted([
     "Symptoms, Signs, And Ill-Defined Conditions",
 ])
 
-ADMISSION_TYPE = {0: "Select", 1: "Emergency", 2: "Urgent", 3: "Elective", 4: "Newborn", 7: "Trauma Center"}
-DISCHARGE_DISP = {0: "Select", 1: "Home", 2: "Short Term Hospital", 3: "Skilled Nursing Facility", 6: "Home with Home Health", 13: "Hospice / Home"}
-ADMISSION_SOURCE = {0: "Select", 1: "Physician Referral", 2: "Clinic Referral", 3: "HMO Referral", 4: "Transfer from Hospital", 7: "Emergency Room"}
+admission_type = {0: "Select", 1: "Emergency", 2: "Urgent", 3: "Elective", 4: "Newborn", 7: "Trauma Center"}
+discharge_disp = {0: "Select", 1: "Home", 2: "Short Term Hospital", 3: "Skilled Nursing Facility", 6: "Home with Home Health", 13: "Hospice / Home"}
+admission_source = {0: "Select", 1: "Physician Referral", 2: "Clinic Referral", 3: "HMO Referral", 4: "Transfer from Hospital", 7: "Emergency Room"}
 
 
 def clean_feature_name(feat):
@@ -220,24 +220,24 @@ st.markdown("---")
 with st.form("patient_form"):
     col1, col2, col3 = st.columns(3, gap="large")
 
-    # Column 1: Demographics + Diagnoses
+    # Demographics and diagnoses
     with col1:
         st.markdown('<p class="section-header">Demographics</p>', unsafe_allow_html=True)
-        age = st.selectbox("Age Group", ["Select", "[10-20)","[20-30)","[30-40)","[40-50)","[50-60)","[60-70)","[70-80)","[80-90)","[90-100)"], index=0)
+        age = st.selectbox("Age Group", ["Select", "10-19","20-29","30-39","40-49","50-59","60-69","70-79","80-89","90-100"], index=0)
         gender = st.selectbox("Gender", ["Select", "Female", "Male"], index=0)
         race = st.selectbox("Race", ["Select", "AfricanAmerican", "Asian", "Caucasian", "Hispanic", "Other"], index=0)
 
         st.markdown('<div class="spacer-md"><p class="section-header">Diagnoses</p></div>', unsafe_allow_html=True)
-        diag_1 = st.selectbox("Primary Diagnosis", DIAG_CATEGORIES, index=0)
-        diag_2 = st.selectbox("Secondary Diagnosis", DIAG_CATEGORIES, index=0)
-        diag_3 = st.selectbox("Tertiary Diagnosis", DIAG_CATEGORIES, index=0)
+        diag_1 = st.selectbox("Primary Diagnosis", diag_categories, index=0)
+        diag_2 = st.selectbox("Secondary Diagnosis", diag_categories, index=0)
+        diag_3 = st.selectbox("Tertiary Diagnosis", diag_categories, index=0)
 
-    # Column 2: Admission Info + Prior Visits
+    # Admission Info and prior visits
     with col2:
         st.markdown('<p class="section-header">Admission Info</p>', unsafe_allow_html=True)
-        admission_type_id = st.selectbox("Admission Type", options=list(ADMISSION_TYPE.keys()), format_func=lambda x: ADMISSION_TYPE[x], index=0)
-        admission_source_id = st.selectbox("Admission Source", options=list(ADMISSION_SOURCE.keys()), format_func=lambda x: ADMISSION_SOURCE[x], index=0)
-        discharge_disposition_id = st.selectbox("Discharge Destination", options=list(DISCHARGE_DISP.keys()), format_func=lambda x: DISCHARGE_DISP[x], index=0)
+        admission_type_id = st.selectbox("Admission Type", options=list(admission_type.keys()), format_func=lambda x: admission_type[x], index=0)
+        admission_source_id = st.selectbox("Admission Source", options=list(admission_source.keys()), format_func=lambda x: admission_source[x], index=0)
+        discharge_disposition_id = st.selectbox("Discharge Destination", options=list(discharge_disp.keys()), format_func=lambda x: discharge_disp[x], index=0)
         time_in_hospital = st.slider("Days in Hospital", 1, 14, 0)
 
         st.markdown('<div class="spacer-sm"><p class="section-header">Prior Visits</p></div>', unsafe_allow_html=True)
@@ -248,7 +248,7 @@ with st.form("patient_form"):
 
         submitted = st.form_submit_button("Predict Readmission Risk")
 
-    # Column 3: Clinical Metrics + Medications
+    # Clinical Metrics and medications
     with col3:
         st.markdown('<p class="section-header">Clinical Metrics</p>', unsafe_allow_html=True)
         num_procedures = st.number_input("Number of Procedures", 0, 20, 0)
@@ -264,7 +264,6 @@ with st.form("patient_form"):
 
 # Results
 if submitted:
-    # Validate required dropdowns
     missing = []
     if age == "Select": missing.append("Age Group")
     if gender == "Select": missing.append("Gender")
@@ -282,7 +281,7 @@ if submitted:
         st.error(f"Please complete the following fields before predicting: {', '.join(missing)}")
         st.stop()
 
-    avg_procedure = num_procedures / time_in_hospital if time_in_hospital > 0 else 0
+    avg_procedure = num_procedures/time_in_hospital if time_in_hospital > 0 else 0
     total_visits = number_inpatient + number_outpatient + number_emergency
 
     inputs = dict(
@@ -371,9 +370,9 @@ if submitted:
         </div>""", unsafe_allow_html=True)
 
         if is_high:
-            st.warning("Recommendation: Consider enhanced discharge planning, early follow-up within 7 days, and patient education on warning signs.")
+            st.warning("Recommendation: Consider enhanced discharge planning, early follow-up within 7 days, and inform patient about warning signs.")
         else:
-            st.success("Recommendation: Standard discharge procedures appear appropriate. Routine follow-up advised.")
+            st.success("Recommendation: Standard discharge procedures seem appropriate. Routine follow-up advised.")
 
         # SHAP Analysis
         st.caption("Red bars push the risk score higher. Blue bars push it lower. Each bar represents one patient factor.")
