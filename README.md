@@ -19,12 +19,14 @@ Hospital-Readmission-Analytics/
 ├── database.ipynb           # Data Storage
 ├── feature_columns.pkl      # Feature column names for model input
 ├── final_data.csv           # Cleaned data used for building models, evaluation, SHAP analysis, and web application
+├── final_data.db            # Database with the final cleaned data
 ├── gb_model.pkl             # Trained Gradient Boosting model
 ├── icd_code.csv             # ICD-9 diagnosis code mappings
 ├── icd_code.json            # Raw ICD-9 code data
 ├── model.ipynb              # Data modeling, evaluation, hyperparameter tuning, SHAP analysis
 ├── original_data.csv        # Original dataset from UCI Machine Learning Repository
 ├── README.md                # Project documentation
+├── requirements.txt         # Project documentation
 └── visualization.ipynb      # Data visualization
 ```
 
