@@ -46,6 +46,26 @@ Run the notebooks in the following order, since each one depends on the output o
 ## Running the Streamlit App
 
 Make sure gb_model.pkl and feature_columns.pkl are in the folder.
+
+Set up a virtual environment:
+
+```python
+# windows
+python -m venv venv
+venv\Scripts\activate
+```
+
+```python
+# macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install dependencies:
+```
+pip install -r requirements.txt
+```
+
 Then run:
 
 ```
